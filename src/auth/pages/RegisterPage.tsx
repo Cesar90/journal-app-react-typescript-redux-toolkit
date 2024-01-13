@@ -1,43 +1,87 @@
 import { Link as RouterLink } from "react-router-dom";
 import { Button, Grid, Link, TextField, Typography } from "@mui/material";
+import { Controller, SubmitHandler, useForm } from "react-hook-form";
 // import { Google } from '@mui/icons-material';
 import { AuthLayout } from "../layout/AuthLayout";
 
+interface IFormInput {
+  name: string
+  email: string;
+  password: string;
+}
+
 export const RegisterPage = () => {
+
+  const { control, handleSubmit } = useForm({
+    defaultValues: {
+      name: "",
+      email: "",
+      password: "",
+    },
+  });
+
+  const onSubmit: SubmitHandler<IFormInput> = (data) => {
+    console.log(data)
+  };
+
   return (
     <AuthLayout title="Create an account">
-      <form>
+      <form onSubmit={handleSubmit(onSubmit)}>
         <Grid container>
           <Grid item xs={12} sx={{ mt: 2 }}>
-            <TextField
-              label="Full Name"
-              type="text"
-              placeholder="Full Name"
-              fullWidth
+            <Controller
+              name="name"
+              control={control}
+              render={({ field }) => (
+                <TextField
+                  {...field}
+                  label="Full Name"
+                  type="text"
+                  placeholder="Full Name"
+                  fullWidth
+                />
+              )}
             />
           </Grid>
 
           <Grid item xs={12} sx={{ mt: 2 }}>
-            <TextField
-              label="email"
-              type="email"
-              placeholder="email@google.com"
-              fullWidth
+            <Controller
+              name="email"
+              control={control}
+              render={({ field }) => (
+                <TextField
+                  {...field}
+                  label="email"
+                  type="email"
+                  placeholder="test@google.com"
+                  fullWidth
+                />
+              )}
             />
           </Grid>
 
           <Grid item xs={12} sx={{ mt: 2 }}>
-            <TextField
-              label="Password"
-              type="password"
-              placeholder="password"
-              fullWidth
+            <Controller
+              name="password"
+              control={control}
+              render={({ field }) => (
+                <TextField
+                  {...field}
+                  label="Password"
+                  type="password"
+                  placeholder="password"
+                  fullWidth
+                />
+              )}
             />
           </Grid>
 
           <Grid container spacing={2} sx={{ mb: 2, mt: 1 }}>
             <Grid item xs={12}>
-              <Button variant="contained" fullWidth>
+              <Button
+                type="submit"
+                variant="contained"
+                fullWidth>
                 Create account
               </Button>
             </Grid>

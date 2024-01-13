@@ -12,7 +12,7 @@ interface IFormInput {
 
 export const RegisterPage = () => {
 
-  const { control, handleSubmit } = useForm({
+  const { control, handleSubmit } = useForm<IFormInput>({
     defaultValues: {
       name: "",
       email: "",
@@ -32,15 +32,27 @@ export const RegisterPage = () => {
             <Controller
               name="name"
               control={control}
-              render={({ field }) => (
-                <TextField
-                  {...field}
-                  label="Full Name"
-                  type="text"
-                  placeholder="Full Name"
-                  fullWidth
-                />
-              )}
+              rules={{
+                required: true,
+                minLength: 5,
+              }}
+              render={({
+                field,
+                fieldState: { error },
+              }) => {
+
+                return (
+                  <TextField
+                    {...field}
+                    label="Full Name"
+                    error={!!error}
+                    type="text"
+                    placeholder="Full Name"
+                    fullWidth
+                    helperText={error?.type == "minLength" ? "At least 6 characters" : null}
+                  />
+                )
+              }}
             />
           </Grid>
 
@@ -48,13 +60,22 @@ export const RegisterPage = () => {
             <Controller
               name="email"
               control={control}
-              render={({ field }) => (
+              rules={{
+                required: true,
+                pattern: /^(([^<>()[\]\\.,;:\s@"]+(\.[^<>()[\]\\.,;:\s@"]+)*)|(".+"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/
+              }}
+              render={({
+                field,
+                fieldState: { error },
+              }) => (
                 <TextField
                   {...field}
                   label="email"
                   type="email"
                   placeholder="test@google.com"
                   fullWidth
+                  error={!!error}
+                  helperText={error?.type == "pattern" ? "Email not valid" : null}
                 />
               )}
             />
@@ -64,13 +85,22 @@ export const RegisterPage = () => {
             <Controller
               name="password"
               control={control}
-              render={({ field }) => (
+              rules={{
+                required: true,
+                minLength: 5,
+              }}
+              render={({
+                field,
+                fieldState: { error },
+              }) => (
                 <TextField
                   {...field}
                   label="Password"
                   type="password"
                   placeholder="password"
                   fullWidth
+                  error={!!error}
+                  helperText={error?.type == "minLength" ? "At least 5 characters" : null}
                 />
               )}
             />

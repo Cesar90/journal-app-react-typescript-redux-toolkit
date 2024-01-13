@@ -13,6 +13,7 @@ export const checkingAuthentication = createAsyncThunk<{}, LoginByEmailProps, { 
     'login/loginByUsername',
     async (authData: LoginByEmailProps, thunkAPI) => {
         try {
+            console.log(authData)
             thunkAPI.dispatch(checkingCredentials())
         } catch (error) {
             console.log(error);

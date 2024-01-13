@@ -3,6 +3,8 @@ import { useForm, Controller, SubmitHandler } from "react-hook-form";
 import { Button, Grid, Link, TextField, Typography } from "@mui/material";
 import { Google } from "@mui/icons-material";
 import { AuthLayout } from "../layout/AuthLayout";
+import { useAppDispatch } from "../../store";
+import { checkingAuthentication, startGoogleSignIn } from "../../store/auth";
 
 interface IFormInput {
   email: string;
@@ -10,6 +12,7 @@ interface IFormInput {
 }
 
 export const LoginPage = () => {
+  const dispatch = useAppDispatch()
   const { control, handleSubmit } = useForm({
     defaultValues: {
       email: "",
@@ -18,10 +21,14 @@ export const LoginPage = () => {
   });
 
   const onSubmit: SubmitHandler<IFormInput> = (data) => {
+    dispatch(checkingAuthentication({ email: "", password: "" }))
     console.log(data);
   };
 
-  const onGoogleSubmit = () => {};
+  const onGoogleSubmit = () => {
+    console.log("onGoogleSignIn")
+    dispatch(startGoogleSignIn({ email: "", password: "" }))
+  };
 
   return (
     <AuthLayout title="Login">

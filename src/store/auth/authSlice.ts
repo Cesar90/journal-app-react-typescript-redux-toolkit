@@ -24,9 +24,11 @@ export const authSlice = createSlice({
   //declaracion del estado inicial de las variables
   initialState,
   reducers: {
-    login: (state) => {},
-    logout: (state) => {},
-    checkingCredentials: (state) => {},
+    login: (state) => { },
+    logout: (state) => { },
+    checkingCredentials: (state) => {
+      state.status = "checking"
+    },
   },
 });
 

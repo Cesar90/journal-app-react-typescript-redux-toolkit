@@ -2,20 +2,20 @@ import { createSlice } from "@reduxjs/toolkit";
 
 export type InitalState = {
   status: (typeof USER_STATUS)[number];
-  uid: string;
-  email: string;
-  displayName: string;
-  photoURL: string;
-  errorMessage: string;
+  uid: string | null;
+  email: string | null;
+  displayName: string | null;
+  photoURL: string | null;
+  errorMessage: string | null;
 };
 
 const initialState: PartialWithRequired<InitalState, "status"> = {
   status: "checking",
-  uid: undefined,
-  email: undefined,
-  displayName: undefined,
-  photoURL: undefined,
-  errorMessage: undefined,
+  uid: null,
+  email: null,
+  displayName: null,
+  photoURL: null,
+  errorMessage: null,
 };
 
 export const authSlice = createSlice({

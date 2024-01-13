@@ -1,9 +1,10 @@
+import { useMemo } from "react";
 import { Link as RouterLink } from "react-router-dom";
 import { useForm, Controller, SubmitHandler } from "react-hook-form";
 import { Button, Grid, Link, TextField, Typography } from "@mui/material";
 import { Google } from "@mui/icons-material";
 import { AuthLayout } from "../layout/AuthLayout";
-import { useAppDispatch } from "../../store";
+import { useAppDispatch, useAppSelector } from "../../store";
 import { checkingAuthentication, startGoogleSignIn } from "../../store/auth";
 
 interface IFormInput {
@@ -12,13 +13,18 @@ interface IFormInput {
 }
 
 export const LoginPage = () => {
-  const dispatch = useAppDispatch()
+  const { status } = useAppSelector(state => state.auth)
+  const dispatch = useAppDispatch();
   const { control, handleSubmit } = useForm({
     defaultValues: {
       email: "",
       password: "",
     },
   });
+
+  const isAuthenticating = useMemo(() => {
+    return status === "checking"
+  }, [status])
 
   const onSubmit: SubmitHandler<IFormInput> = (data) => {
     dispatch(checkingAuthentication({ email: "", password: "" }))
@@ -67,12 +73,20 @@ export const LoginPage = () => {
 
           <Grid container spacing={2} sx={{ mb: 2, mt: 1 }}>
             <Grid item xs={12} sm={6}>
-              <Button type="submit" variant="contained" fullWidth>
+              <Button
+                disabled={isAuthenticating}
+                type="submit"
+                variant="contained"
+                fullWidth>
                 Login
               </Button>
             </Grid>
             <Grid item xs={12} sm={6}>
-              <Button onClick={onGoogleSubmit} variant="contained" fullWidth>
+              <Button
+                disabled={isAuthenticating}
+                onClick={onGoogleSubmit}
+                variant="contained"
+                fullWidth>
                 <Google />
                 <Typography sx={{ ml: 1 }}>Google</Typography>
               </Button>

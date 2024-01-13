@@ -1,6 +1,5 @@
 import { GoogleAuthProvider, signInWithPopup } from "firebase/auth";
 import { FirebaseAuth } from "./config";
-import { InitalState } from "../store/auth";
 
 const googleProvider = new GoogleAuthProvider()
 
@@ -11,7 +10,6 @@ export const signInWithGoogle = async () => {
         // console.log(credentials)
         const { displayName, email, photoURL, uid } = result.user
         return {
-            ok: true,
             displayName,
             email,
             photoURL,
@@ -24,7 +22,6 @@ export const signInWithGoogle = async () => {
         }
 
         return {
-            ok: false,
             errorMessage
         }
     }

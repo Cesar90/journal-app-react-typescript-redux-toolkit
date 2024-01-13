@@ -1,5 +1,5 @@
 import { createAsyncThunk } from '@reduxjs/toolkit';
-import { checkingCredentials } from './';
+import { checkingCredentials, logout, login } from './';
 import { signInWithGoogle } from '../../firebase/providers';
 
 type TsignInWithGoogle = Awaited<ReturnType<typeof signInWithGoogle>>
@@ -21,16 +21,23 @@ export const checkingAuthentication = createAsyncThunk<{}, LoginByEmailProps, { 
     },
 );
 
-export const startGoogleSignIn = createAsyncThunk<{}, LoginByEmailProps, { rejectValue: string }>(
+export const startGoogleSignIn = createAsyncThunk<{}, {}, { rejectValue: string }>(
     'login/loginByUsername',
-    async (authData: LoginByEmailProps, thunkAPI) => {
+    async ({ }, thunkAPI) => {
         try {
             thunkAPI.dispatch(checkingCredentials())
             const result: TsignInWithGoogle = await signInWithGoogle()
-            console.log(result)
-            if (result.errorMessage) {
-
+            if (typeof result.errorMessage == "string" && result.errorMessage != undefined) {
+                return thunkAPI.dispatch(logout({ errorMessage: result.errorMessage }))
             }
+            let loginData = {
+                displayName: result.displayName?.toString(),
+                email: result.email?.toString(),
+                photoURL: result.photoURL?.toString(),
+                uid: result.uid?.toString(),
+                errorMessage: undefined,
+            }
+            return thunkAPI.dispatch(login(loginData))
         } catch (error) {
             console.log(error);
             return thunkAPI.rejectWithValue('error');

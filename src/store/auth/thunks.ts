@@ -54,24 +54,23 @@ export const startGoogleSignIn = createAsyncThunk<{}, {}, { rejectValue: string 
 );
 
 export const startCreatingUserWithEmailPassword = createAsyncThunk<{}, RegisterGoogle, { rejectValue: string }>(
-    'login/startGoogleSignIn',
+    'login/startCreatingUserWithEmailPassword',
     async (registerData: RegisterGoogle, thunkAPI) => {
         try {
             thunkAPI.dispatch(checkingCredentials())
-            const resp = await registerWithEmailPassword(registerData)
-            console.log(resp)
-            // const result: TsignInWithGoogle = await signInWithGoogle()
-            // if (typeof result.errorMessage == "string" && result.errorMessage != undefined) {
-            //     return thunkAPI.dispatch(logout({ errorMessage: result.errorMessage }))
-            // }
-            // let loginData = {
-            //     displayName: result.displayName?.toString(),
-            //     email: result.email?.toString(),
-            //     photoURL: result.photoURL?.toString(),
-            //     uid: result.uid?.toString(),
-            //     errorMessage: undefined,
-            // }
-            // return thunkAPI.dispatch(login(loginData))
+            const result = await registerWithEmailPassword(registerData)
+            if (typeof result.errorMessage == "string" && result.errorMessage != undefined) {
+                return thunkAPI.dispatch(logout({ errorMessage: result.errorMessage }))
+            }
+
+            let loginData = {
+                displayName: result.displayName?.toString(),
+                email: result.email?.toString(),
+                photoURL: result.photoURL?.toString(),
+                uid: result.uid?.toString(),
+                errorMessage: undefined,
+            }
+            return thunkAPI.dispatch(login(loginData))
         } catch (error) {
             return thunkAPI.rejectWithValue('error');
         }

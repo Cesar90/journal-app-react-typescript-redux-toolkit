@@ -1,6 +1,14 @@
 import { createAsyncThunk } from '@reduxjs/toolkit';
-import { checkingCredentials, logout, login } from './';
-import { signInWithGoogle } from '../../firebase/providers';
+import {
+    checkingCredentials,
+    logout,
+    login
+} from './';
+import {
+    signInWithGoogle,
+    registerWithEmailPassword,
+    RegisterGoogle
+} from '../../firebase/providers';
 
 type TsignInWithGoogle = Awaited<ReturnType<typeof signInWithGoogle>>
 
@@ -23,7 +31,7 @@ export const checkingAuthentication = createAsyncThunk<{}, LoginByEmailProps, { 
 );
 
 export const startGoogleSignIn = createAsyncThunk<{}, {}, { rejectValue: string }>(
-    'login/loginByUsername',
+    'login/startGoogleSignIn',
     async ({ }, thunkAPI) => {
         try {
             thunkAPI.dispatch(checkingCredentials())
@@ -40,7 +48,31 @@ export const startGoogleSignIn = createAsyncThunk<{}, {}, { rejectValue: string 
             }
             return thunkAPI.dispatch(login(loginData))
         } catch (error) {
-            console.log(error);
+            return thunkAPI.rejectWithValue('error');
+        }
+    },
+);
+
+export const startCreatingUserWithEmailPassword = createAsyncThunk<{}, RegisterGoogle, { rejectValue: string }>(
+    'login/startGoogleSignIn',
+    async (registerData: RegisterGoogle, thunkAPI) => {
+        try {
+            thunkAPI.dispatch(checkingCredentials())
+            const resp = await registerWithEmailPassword(registerData)
+            console.log(resp)
+            // const result: TsignInWithGoogle = await signInWithGoogle()
+            // if (typeof result.errorMessage == "string" && result.errorMessage != undefined) {
+            //     return thunkAPI.dispatch(logout({ errorMessage: result.errorMessage }))
+            // }
+            // let loginData = {
+            //     displayName: result.displayName?.toString(),
+            //     email: result.email?.toString(),
+            //     photoURL: result.photoURL?.toString(),
+            //     uid: result.uid?.toString(),
+            //     errorMessage: undefined,
+            // }
+            // return thunkAPI.dispatch(login(loginData))
+        } catch (error) {
             return thunkAPI.rejectWithValue('error');
         }
     },

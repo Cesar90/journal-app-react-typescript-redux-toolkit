@@ -1,5 +1,12 @@
-import { GoogleAuthProvider, signInWithPopup } from "firebase/auth";
+import {
+    createUserWithEmailAndPassword,
+    GoogleAuthProvider,
+    signInWithPopup
+} from "firebase/auth";
 import { FirebaseAuth } from "./config";
+import { InitalState } from "../store/auth";
+
+export type RegisterGoogle = Pick<InitalState, "email" | "displayName"> & { password: string }
 
 const googleProvider = new GoogleAuthProvider()
 
@@ -15,6 +22,30 @@ export const signInWithGoogle = async () => {
             photoURL,
             uid
         }
+    } catch (error) {
+        let errorMessage = "";
+        if (typeof error === 'object' && error !== null && "message" in error) {
+            errorMessage = error.message as string
+        }
+
+        return {
+            errorMessage
+        }
+    }
+}
+
+export const registerWithEmailPassword = async ({ email, password, displayName }: RegisterGoogle) => {
+
+    try {
+        const resp = await createUserWithEmailAndPassword(FirebaseAuth, email, password);
+        const { uid, photoURL } = resp.user
+        return {
+            displayName,
+            email,
+            photoURL: photoURL?.toString(),
+            uid: uid.toString()
+        }
+
     } catch (error) {
         let errorMessage = "";
         if (typeof error === 'object' && error !== null && "message" in error) {

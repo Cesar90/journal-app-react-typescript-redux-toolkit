@@ -3,25 +3,28 @@ import { Button, Grid, Link, TextField, Typography } from "@mui/material";
 import { Controller, SubmitHandler, useForm } from "react-hook-form";
 // import { Google } from '@mui/icons-material';
 import { AuthLayout } from "../layout/AuthLayout";
+import { useAppDispatch } from "../../store";
+import { startCreatingUserWithEmailPassword } from "../../store/auth";
 
 interface IFormInput {
-  name: string
+  displayName: string
   email: string;
   password: string;
 }
 
 export const RegisterPage = () => {
 
+  const dispatch = useAppDispatch();
   const { control, handleSubmit } = useForm<IFormInput>({
     defaultValues: {
-      name: "",
+      displayName: "",
       email: "",
       password: "",
     },
   });
 
   const onSubmit: SubmitHandler<IFormInput> = (data) => {
-    console.log(data)
+    dispatch(startCreatingUserWithEmailPassword(data));
   };
 
   return (
@@ -30,7 +33,7 @@ export const RegisterPage = () => {
         <Grid container>
           <Grid item xs={12} sx={{ mt: 2 }}>
             <Controller
-              name="name"
+              name="displayName"
               control={control}
               rules={{
                 required: true,
@@ -70,7 +73,7 @@ export const RegisterPage = () => {
               }) => (
                 <TextField
                   {...field}
-                  label="email"
+                  label="Email"
                   type="email"
                   placeholder="test@google.com"
                   fullWidth

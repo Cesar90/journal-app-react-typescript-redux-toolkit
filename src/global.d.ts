@@ -18,6 +18,24 @@ declare global {
     "not-authenticated",
     "authenticated",
   ] as const;
+
+  export type InitalStateJournal = {
+    isSaving: boolean,
+    messageSaved: string,
+    notes: TNote[],
+    active: null | TNote
+  }
+
+  export type TNote = {
+    id: string,
+    title: string,
+    body: string,
+    date: Date,
+    imagesUrls: Image[]
+  }
+
+  export type Image = string[]
+
 }
 
 export { };

@@ -4,8 +4,17 @@ import { AddOutlined } from '@mui/icons-material';
 import { JournalLayout } from '../layout/JournalLayout';
 //@ts-ignore
 import { NoteView, NothingSelectedView } from '../views';
+import { useAppDispatch } from '../../store';
+import { startNewNote } from '../../store/journal';
 
 export const JournalPage = () => {
+
+  const dispatch = useAppDispatch();
+
+  const onClickNewNote = () => {
+    dispatch(startNewNote({}))
+  }
+
   return (
     <JournalLayout>
 
@@ -16,6 +25,7 @@ export const JournalPage = () => {
 
 
       <IconButton
+        onClick={onClickNewNote}
         size='large'
         sx={{
           color: 'white',

@@ -10,7 +10,7 @@ export type InitalState = {
 };
 
 const initialState: RequireOnly<InitalState, "status"> = {
-  status: "not-authenticated",
+  status: "checking",
   uid: undefined,
   email: undefined,
   displayName: undefined,

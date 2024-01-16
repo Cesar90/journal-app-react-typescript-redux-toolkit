@@ -8,7 +8,8 @@ import {
     signInWithGoogle,
     registerWithEmailPassword,
     RegisterGoogle,
-    loginWithEmailPassword
+    loginWithEmailPassword,
+    logoutFirebase
 } from '../../firebase/providers';
 
 type TsignInWithGoogle = Awaited<ReturnType<typeof signInWithGoogle>>
@@ -98,6 +99,19 @@ export const startLoginWithEmailPassword = createAsyncThunk<{}, LoginByEmailProp
 
         } catch (error) {
             console.log(error);
+            return thunkAPI.rejectWithValue('error');
+        }
+    },
+);
+
+
+export const startLogout = createAsyncThunk<{}, {}, { rejectValue: string }>(
+    'login/startLogout',
+    async (_, thunkAPI) => {
+        try {
+            await logoutFirebase();
+            thunkAPI.dispatch(logout({}))
+        } catch (error) {
             return thunkAPI.rejectWithValue('error');
         }
     },

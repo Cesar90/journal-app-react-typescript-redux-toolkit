@@ -4,28 +4,30 @@ import { NavBar, SideBar } from '../components';
 import { FC } from 'react';
 
 type IProps = {
-    children: JSX.Element[]
+  children: JSX.Element[]
 }
 
 const drawerWidth = 280;
 
-export const JournalLayout:FC<IProps> = ({ children }) => {
+export const JournalLayout: FC<IProps> = ({ children }) => {
   return (
-    <Box sx={{ display: 'flex' }}>
+    <Box
+      className='animate__animated animate__fadeIn animate__faster'
+      sx={{ display: 'flex' }}>
 
-        <NavBar drawerWidth={ drawerWidth } />
+      <NavBar drawerWidth={drawerWidth} />
 
-        <SideBar drawerWidth={ drawerWidth } />
+      <SideBar drawerWidth={drawerWidth} />
 
-        <Box 
-            component='main'
-            sx={{ flexGrow: 1, p: 3 }}
-        >
-            <Toolbar />
+      <Box
+        component='main'
+        sx={{ flexGrow: 1, p: 3 }}
+      >
+        <Toolbar />
 
-            { children }
-            
-        </Box>
+        {children}
+
+      </Box>
     </Box>
   )
 }

@@ -2,17 +2,16 @@ import { Grid, Typography } from '@mui/material';
 import { FC } from 'react';
 
 type IProps = {
-    children: JSX.Element,
-    title: string
+  children: JSX.Element,
+  title: string
 }
 
 
-export const AuthLayout:FC<IProps> = ({ children, title = '' }) => {
+export const AuthLayout: FC<IProps> = ({ children, title = '' }) => {
   return (
-    
     <Grid
       container
-      spacing={ 0 }
+      spacing={0}
       direction="column"
       alignItems="center"
       justifyContent="center"
@@ -20,21 +19,21 @@ export const AuthLayout:FC<IProps> = ({ children, title = '' }) => {
     >
 
       <Grid item
-       className='box-shadow'
-       xs={ 3 }
-       sx={{ 
-            width: { sm: 450 },
-            backgroundColor: 'white', 
-            padding: 3, 
-            borderRadius: 2 
+        className='box-shadow'
+        xs={3}
+        sx={{
+          width: { sm: 450 },
+          backgroundColor: 'white',
+          padding: 3,
+          borderRadius: 2
         }}>
-          
-          <Typography variant='h5' sx={{ mb: 1 }}>{ title }</Typography>
 
-            
-            { children }
+        <Typography variant='h5' sx={{ mb: 1 }}>{title}</Typography>
 
-        </Grid>
+
+        {children}
+
+      </Grid>
 
     </Grid>
 

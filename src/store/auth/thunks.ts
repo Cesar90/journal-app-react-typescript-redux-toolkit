@@ -7,12 +7,13 @@ import {
 import {
     signInWithGoogle,
     registerWithEmailPassword,
-    RegisterGoogle
+    RegisterGoogle,
+    loginWithEmailPassword
 } from '../../firebase/providers';
 
 type TsignInWithGoogle = Awaited<ReturnType<typeof signInWithGoogle>>
 
-interface LoginByEmailProps {
+export interface LoginByEmailProps {
     email: string;
     password: string;
 }
@@ -72,6 +73,31 @@ export const startCreatingUserWithEmailPassword = createAsyncThunk<{}, RegisterG
             }
             return thunkAPI.dispatch(login(loginData))
         } catch (error) {
+            return thunkAPI.rejectWithValue('error');
+        }
+    },
+);
+
+export const startLoginWithEmailPassword = createAsyncThunk<{}, LoginByEmailProps, { rejectValue: string }>(
+    'login/startLoginWithEmailPassword',
+    async (authData: LoginByEmailProps, thunkAPI) => {
+        try {
+            console.log(authData)
+            const result = await loginWithEmailPassword(authData);
+            if (typeof result.errorMessage == "string" && result.errorMessage != undefined) {
+                return thunkAPI.dispatch(logout({ errorMessage: result.errorMessage }))
+            }
+            let loginData = {
+                displayName: result.displayName?.toString(),
+                email: authData.email,
+                photoURL: result.photoURL?.toString(),
+                uid: result.uid?.toString(),
+                errorMessage: undefined,
+            }
+            return thunkAPI.dispatch(login(loginData))
+
+        } catch (error) {
+            console.log(error);
             return thunkAPI.rejectWithValue('error');
         }
     },

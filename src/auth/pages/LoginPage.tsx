@@ -1,11 +1,11 @@
 import { useMemo } from "react";
 import { Link as RouterLink } from "react-router-dom";
 import { useForm, Controller, SubmitHandler } from "react-hook-form";
-import { Button, Grid, Link, TextField, Typography } from "@mui/material";
+import { Alert, Button, Grid, Link, TextField, Typography } from "@mui/material";
 import { Google } from "@mui/icons-material";
 import { AuthLayout } from "../layout/AuthLayout";
 import { useAppDispatch, useAppSelector } from "../../store";
-import { checkingAuthentication, startGoogleSignIn } from "../../store/auth";
+import { startGoogleSignIn, startLoginWithEmailPassword } from "../../store/auth";
 
 interface IFormInput {
   email: string;
@@ -13,7 +13,7 @@ interface IFormInput {
 }
 
 export const LoginPage = () => {
-  const { status } = useAppSelector(state => state.auth)
+  const { status, errorMessage } = useAppSelector(state => state.auth)
   const dispatch = useAppDispatch();
   const { control, handleSubmit } = useForm({
     defaultValues: {
@@ -27,8 +27,7 @@ export const LoginPage = () => {
   }, [status])
 
   const onSubmit: SubmitHandler<IFormInput> = (data) => {
-    dispatch(checkingAuthentication({ email: "", password: "" }))
-    console.log(data);
+    dispatch(startLoginWithEmailPassword(data));
   };
 
   const onGoogleSubmit = () => {
@@ -70,6 +69,21 @@ export const LoginPage = () => {
               )}
             />
           </Grid>
+
+          <Grid
+            container
+            display={!!errorMessage ? "" : "none"}
+            sx={{ mt: 1, mb: 1 }}
+          >
+            <Grid
+              item xs={12}
+            >
+              <Alert severity="error">
+                {errorMessage}
+              </Alert>
+            </Grid>
+          </Grid>
+
 
           <Grid container spacing={2} sx={{ mb: 2, mt: 1 }}>
             <Grid item xs={12} sm={6}>

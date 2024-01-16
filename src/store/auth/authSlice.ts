@@ -32,7 +32,7 @@ export const authSlice = createSlice({
       state.displayName = payload.displayName;
       state.errorMessage = payload.errorMessage;
     },
-    logout: (state, { payload }: PayloadAction<RequireOnly<InitalState, "errorMessage">>) => {
+    logout: (state, { payload }: PayloadAction<Partial<InitalState>>) => {
       state.status = "not-authenticated";
       state.uid = undefined;
       state.email = undefined;

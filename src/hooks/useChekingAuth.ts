@@ -3,6 +3,7 @@ import { onAuthStateChanged } from "firebase/auth";
 import { useAppDispatch, useAppSelector } from "../store";
 import { FirebaseAuth } from "../firebase/config";
 import { login, logout } from "../store/auth";
+import { startLoadingNotes } from "../store/journal";
 
 export const useChekingAuth = () => {
     const { status } = useAppSelector(state => state.auth);
@@ -20,6 +21,7 @@ export const useChekingAuth = () => {
                 photoURL: photoURL?.toString()
             }
             dispatch(login(userInfo))
+            dispatch(startLoadingNotes({}))
         })
     }, []);
 

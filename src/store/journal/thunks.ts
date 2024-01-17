@@ -2,7 +2,8 @@ import { createAsyncThunk } from "@reduxjs/toolkit";
 import { collection, doc, setDoc } from "firebase/firestore/lite"
 import { RootState } from "../store";
 import { FirebaseDB } from "../../firebase/config";
-import { addNewEmptyNote, savingNewNote, setActiveNote } from "./journalSlice";
+import { addNewEmptyNote, savingNewNote, setActiveNote, setNotes } from "./journalSlice";
+import { loadNotes } from "../../helpers";
 
 export const startNewNote = createAsyncThunk<{}, {}, { rejectValue: string }>(
     'journal/startNewNote',
@@ -25,6 +26,22 @@ export const startNewNote = createAsyncThunk<{}, {}, { rejectValue: string }>(
             thunkAPI.dispatch(addNewEmptyNote(newNote))
             thunkAPI.dispatch(setActiveNote(newNote))
 
+
+        } catch (error) {
+            return thunkAPI.rejectWithValue('error');
+        }
+    },
+);
+
+export const startLoadingNotes = createAsyncThunk<{}, {}, { rejectValue: string }>(
+    'journal/startLoadingNotes',
+    async (_, thunkAPI) => {
+        try {
+
+            const { uid } = (thunkAPI.getState() as RootState).auth
+            if (!uid) throw new Error("The ID of user no exists")
+            const notes = await loadNotes(uid);
+            thunkAPI.dispatch(setNotes(notes))
 
         } catch (error) {
             return thunkAPI.rejectWithValue('error');

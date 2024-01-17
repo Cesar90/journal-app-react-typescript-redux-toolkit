@@ -3,7 +3,7 @@ import { collection, doc, setDoc } from "firebase/firestore/lite"
 import { RootState } from "../store";
 import { FirebaseDB } from "../../firebase/config";
 import { addNewEmptyNote, savingNewNote, setActiveNote, setNotes, setSaving, updateNote } from "./journalSlice";
-import { loadNotes } from "../../helpers";
+import { fileUpload, loadNotes } from "../../helpers";
 
 export const startNewNote = createAsyncThunk<{}, {}, { rejectValue: string }>(
     'journal/startNewNote',
@@ -64,8 +64,19 @@ export const startSaveNote = createAsyncThunk<{}, {}, { rejectValue: string }>(
                 await setDoc(docRef, noteToFireStore, { merge: true });
                 thunkAPI.dispatch(updateNote(note));
             }
+        } catch (error) {
+            console.log("error", error)
+            return thunkAPI.rejectWithValue('error');
+        }
+    },
+);
 
-
+export const startUploadingFiles = createAsyncThunk<{}, { files: FileList }, { rejectValue: string }>(
+    'journal/startUploadingFiles',
+    async ({ files }, thunkAPI) => {
+        try {
+            thunkAPI.dispatch(setSaving())
+            await fileUpload(files[0]);
         } catch (error) {
             console.log("error", error)
             return thunkAPI.rejectWithValue('error');

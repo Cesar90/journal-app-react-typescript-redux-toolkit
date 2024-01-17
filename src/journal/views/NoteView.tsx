@@ -6,7 +6,7 @@ import 'sweetalert2/dist/sweetalert2.css';
 import { ImageGallery } from '../components'
 import { useAppDispatch, useAppSelector } from '../../store';
 import { useEffect, useMemo, useRef } from 'react';
-import { setActiveNote, startSaveNote } from '../../store/journal';
+import { setActiveNote, startSaveNote, startUploadingFiles } from '../../store/journal';
 
 
 export const NoteView = () => {
@@ -30,10 +30,10 @@ export const NoteView = () => {
     }
 
     const onFileInputChange = ({ target }: React.ChangeEvent<HTMLInputElement>) => {
-        if (target.files?.length == 0) {
+        if (target.files?.length == 0 || target.files === null) {
             return
         }
-
+        dispatch(startUploadingFiles({ files: target.files }))
     }
 
     const dateString = useMemo(() => {

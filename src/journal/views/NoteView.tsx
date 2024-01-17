@@ -1,11 +1,11 @@
 import { Controller, useForm } from 'react-hook-form';
-import { SaveOutlined } from '@mui/icons-material';
-import { Button, Grid, TextField, Typography } from '@mui/material';
+import { SaveOutlined, UploadOutlined } from '@mui/icons-material';
+import { Button, Grid, IconButton, TextField, Typography } from '@mui/material';
 import Swal from 'sweetalert2';
 import 'sweetalert2/dist/sweetalert2.css';
 import { ImageGallery } from '../components'
 import { useAppDispatch, useAppSelector } from '../../store';
-import { useEffect, useMemo } from 'react';
+import { useEffect, useMemo, useRef } from 'react';
 import { setActiveNote, startSaveNote } from '../../store/journal';
 
 
@@ -23,9 +23,17 @@ export const NoteView = () => {
             body: note?.body ? note.body : "",
         },
     });
+    const fileInputRef = useRef<HTMLInputElement>(null)
 
     const onSaveNote = () => {
         dispatch(startSaveNote({}));
+    }
+
+    const onFileInputChange = ({ target }: React.ChangeEvent<HTMLInputElement>) => {
+        if (target.files?.length == 0) {
+            return
+        }
+
     }
 
     const dateString = useMemo(() => {
@@ -76,6 +84,23 @@ export const NoteView = () => {
                 <Typography fontSize={39} fontWeight='light' >{dateString}</Typography>
             </Grid>
             <Grid item>
+
+                <input
+                    type="file"
+                    multiple
+                    onChange={(e) => onFileInputChange(e)}
+                    style={{ display: "none" }}
+                    ref={fileInputRef}
+                />
+
+                <IconButton
+                    color="primary"
+                    disabled={isSaving}
+                    onClick={() => fileInputRef.current?.click()}
+                >
+                    <UploadOutlined />
+                </IconButton>
+
                 <Button
                     disabled={isSaving}
                     onClick={onSaveNote}

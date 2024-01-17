@@ -1,6 +1,8 @@
 import { Controller, useForm } from 'react-hook-form';
 import { SaveOutlined } from '@mui/icons-material';
 import { Button, Grid, TextField, Typography } from '@mui/material';
+import Swal from 'sweetalert2';
+import 'sweetalert2/dist/sweetalert2.css';
 import { ImageGallery } from '../components'
 import { useAppDispatch, useAppSelector } from '../../store';
 import { useEffect, useMemo } from 'react';
@@ -9,11 +11,16 @@ import { setActiveNote, startSaveNote } from '../../store/journal';
 
 export const NoteView = () => {
     const dispatch = useAppDispatch()
-    const { active: note } = useAppSelector(state => state.journal);
-    const { control, watch } = useForm({
+    const {
+        active: note,
+        messageSaved,
+        isSaving
+    } = useAppSelector(state => state.journal);
+    const { control, watch, reset, getValues } = useForm({
         defaultValues: {
-            title: note?.title,
-            body: note?.body,
+            id: note?.id,
+            title: note?.title ? note.title : "",
+            body: note?.body ? note.body : "",
         },
     });
 
@@ -42,6 +49,24 @@ export const NoteView = () => {
         return () => subscription.unsubscribe()
     }, [watch]);
 
+    useEffect(() => {
+        if (messageSaved.length > 0) {
+            Swal.fire('Note updated', messageSaved, 'success');
+        }
+    }, [messageSaved]);
+
+    useEffect(() => {
+        if (note) {
+            if (getValues("id") != note.id) {
+                reset({
+                    id: note.id,
+                    title: note.title,
+                    body: note.body,
+                });
+            }
+        }
+    }, [note]);
+
     return (
         <Grid
             className='animate__animated animate__fadeIn animate__faster'
@@ -52,6 +77,7 @@ export const NoteView = () => {
             </Grid>
             <Grid item>
                 <Button
+                    disabled={isSaving}
                     onClick={onSaveNote}
                     color="primary"
                     sx={{ padding: 2 }}>

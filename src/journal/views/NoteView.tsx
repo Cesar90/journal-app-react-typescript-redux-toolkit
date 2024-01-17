@@ -2,19 +2,24 @@ import { Controller, useForm } from 'react-hook-form';
 import { SaveOutlined } from '@mui/icons-material';
 import { Button, Grid, TextField, Typography } from '@mui/material';
 import { ImageGallery } from '../components'
-import { useAppSelector } from '../../store';
-import { useMemo } from 'react';
+import { useAppDispatch, useAppSelector } from '../../store';
+import { useEffect, useMemo } from 'react';
+import { setActiveNote, startSaveNote } from '../../store/journal';
 
 
 export const NoteView = () => {
-
-    const { active: note } = useAppSelector(state => state.journal)
-    const { control, handleSubmit } = useForm({
+    const dispatch = useAppDispatch()
+    const { active: note } = useAppSelector(state => state.journal);
+    const { control, watch } = useForm({
         defaultValues: {
             title: note?.title,
             body: note?.body,
         },
     });
+
+    const onSaveNote = () => {
+        dispatch(startSaveNote({}));
+    }
 
     const dateString = useMemo(() => {
         if (note?.date) {
@@ -22,7 +27,20 @@ export const NoteView = () => {
             return newDate.toUTCString()
         }
         return note?.date
-    }, [note?.date])
+    }, [note?.date]);
+
+    useEffect(() => {
+        const subscription = watch((value) => {
+            if (note && note.id) {
+                dispatch(setActiveNote({
+                    ...note,
+                    ...value
+                }))
+            }
+        }
+        )
+        return () => subscription.unsubscribe()
+    }, [watch]);
 
     return (
         <Grid
@@ -33,9 +51,12 @@ export const NoteView = () => {
                 <Typography fontSize={39} fontWeight='light' >{dateString}</Typography>
             </Grid>
             <Grid item>
-                <Button color="primary" sx={{ padding: 2 }}>
+                <Button
+                    onClick={onSaveNote}
+                    color="primary"
+                    sx={{ padding: 2 }}>
                     <SaveOutlined sx={{ fontSize: 30, mr: 1 }} />
-                    Guardar
+                    Save
                 </Button>
             </Grid>
 

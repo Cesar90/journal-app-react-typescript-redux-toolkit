@@ -18,17 +18,23 @@ export const journalSlice = createSlice({
             state.notes.push(payload);
             state.isSaving = false;
         },
-        setActiveNote: (state, { payload }: PayloadAction<TNote>) => {
+        setActiveNote: (state, { payload }: PayloadAction<TActive>) => {
             state.active = payload
         },
         setNotes: (state, { payload }: PayloadAction<TNote[]>) => {
             state.notes = payload
         },
         setSaving: (state) => {
-
+            state.isSaving = true;
         },
-        updateNote: (state, action) => {
-
+        updateNote: (state, { payload }: PayloadAction<TActive>) => {
+            state.isSaving = false;
+            state.notes = state.notes.map(note => {
+                if (note.id === payload.id) {
+                    return payload
+                }
+                return note;
+            })
         },
         deleteNoteById: (state, action) => {
 

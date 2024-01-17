@@ -2,7 +2,7 @@ import { createAsyncThunk } from "@reduxjs/toolkit";
 import { collection, doc, setDoc } from "firebase/firestore/lite"
 import { RootState } from "../store";
 import { FirebaseDB } from "../../firebase/config";
-import { addNewEmptyNote, savingNewNote, setActiveNote, setNotes } from "./journalSlice";
+import { addNewEmptyNote, savingNewNote, setActiveNote, setNotes, setSaving, updateNote } from "./journalSlice";
 import { loadNotes } from "../../helpers";
 
 export const startNewNote = createAsyncThunk<{}, {}, { rejectValue: string }>(
@@ -44,6 +44,30 @@ export const startLoadingNotes = createAsyncThunk<{}, {}, { rejectValue: string 
             thunkAPI.dispatch(setNotes(notes))
 
         } catch (error) {
+            return thunkAPI.rejectWithValue('error');
+        }
+    },
+);
+
+export const startSaveNote = createAsyncThunk<{}, {}, { rejectValue: string }>(
+    'journal/startSaveNote',
+    async (_, thunkAPI) => {
+        try {
+            thunkAPI.dispatch(setSaving())
+            const { uid } = (thunkAPI.getState() as RootState).auth;
+            const { active: note } = (thunkAPI.getState() as RootState).journal;
+            const noteToFireStore = { ...note };
+            delete noteToFireStore.id;
+            if (note && note.id) {
+                const docRef = doc(FirebaseDB, `${uid}/journal/notes/${note.id}`)
+                noteToFireStore.imagesUrls = noteToFireStore.imagesUrls ? noteToFireStore.imagesUrls : []
+                await setDoc(docRef, noteToFireStore, { merge: true });
+                thunkAPI.dispatch(updateNote(note));
+            }
+
+
+        } catch (error) {
+            console.log("error", error)
             return thunkAPI.rejectWithValue('error');
         }
     },

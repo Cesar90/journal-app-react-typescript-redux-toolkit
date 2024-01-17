@@ -19,11 +19,13 @@ declare global {
     "authenticated",
   ] as const;
 
+  export type TActive = RequireOnly<TNote, "id">
+
   export type InitalStateJournal = {
     isSaving: boolean,
     messageSaved: string,
-    notes: TNote[],
-    active: null | TNote
+    notes: TActive[],
+    active: null | TActive
   }
 
   export type TNote = {

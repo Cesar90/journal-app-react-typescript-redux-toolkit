@@ -30,7 +30,7 @@ declare global {
     id: string,
     title: string,
     body: string,
-    date: Date,
+    date: number,
     imagesUrls: Image[]
   }
 

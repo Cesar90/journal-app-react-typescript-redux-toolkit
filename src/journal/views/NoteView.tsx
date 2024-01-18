@@ -1,12 +1,12 @@
 import { Controller, useForm } from 'react-hook-form';
-import { SaveOutlined, UploadOutlined } from '@mui/icons-material';
+import { DeleteOutline, SaveOutlined, UploadOutlined } from '@mui/icons-material';
 import { Button, Grid, IconButton, TextField, Typography } from '@mui/material';
 import Swal from 'sweetalert2';
 import 'sweetalert2/dist/sweetalert2.css';
 import { ImageGallery } from '../components'
 import { useAppDispatch, useAppSelector } from '../../store';
 import { useEffect, useMemo, useRef } from 'react';
-import { setActiveNote, startSaveNote, startUploadingFiles } from '../../store/journal';
+import { setActiveNote, startDeletingNote, startSaveNote, startUploadingFiles } from '../../store/journal';
 
 
 export const NoteView = () => {
@@ -36,6 +36,10 @@ export const NoteView = () => {
             return
         }
         dispatch(startUploadingFiles({ files: target.files }))
+    }
+
+    const onDelete = () => {
+        dispatch(startDeletingNote({}))
     }
 
     useEffect(() => {
@@ -149,6 +153,17 @@ export const NoteView = () => {
                         />
                     )}
                 />
+            </Grid>
+
+            <Grid container justifyContent="end">
+                <Button
+                    onClick={onDelete}
+                    sx={{ mt: 2 }}
+                    color="error"
+                >
+                    <DeleteOutline />
+                    Delete
+                </Button>
             </Grid>
 
             {/* Image gallery */}

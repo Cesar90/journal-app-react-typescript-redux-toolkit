@@ -2,8 +2,8 @@ import { VITE_CLOUDINARY_CN } from "../constants";
 
 export const fileUpload = async (file: File) => {
     if (!file) {
-        // throw new Error("Please select a file");
-        return null;
+        throw new Error("Please select a file");
+        // return null;
     }
     //react-journal
     const cloudUrl = `https://api.cloudinary.com/v1_1/${VITE_CLOUDINARY_CN}/upload`;
@@ -24,12 +24,11 @@ export const fileUpload = async (file: File) => {
         return cloudResp.secure_url;
 
     } catch (error) {
-        // let errorMessage = "";
-        // if (typeof error === 'object' && error !== null && "message" in error) {
-        //     errorMessage = error.message as string
-        // }
-        // throw new Error(errorMessage);
-        console.log(error);
-        return null;
+        let errorMessage = "";
+        if (typeof error === 'object' && error !== null && "message" in error) {
+            errorMessage = error.message as string
+        }
+        throw new Error(errorMessage);
+        // return null;
     }
 }

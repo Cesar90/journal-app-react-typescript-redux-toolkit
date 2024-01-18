@@ -16,7 +16,7 @@ export const NoteView = () => {
         messageSaved,
         isSaving
     } = useAppSelector(state => state.journal);
-    const { control, watch, setValue, getValues, reset, formState: {
+    const { control, watch, getValues, reset, formState: {
         isDirty,
     }, } = useForm({
         defaultValues: {

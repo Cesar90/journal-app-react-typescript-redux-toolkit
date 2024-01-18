@@ -33,7 +33,7 @@ declare global {
     title: string,
     body: string,
     date: number,
-    imagesUrls: Image[]
+    imagesUrls: Image
   }
 
   export type Image = string[]

@@ -2,7 +2,7 @@ import { createAsyncThunk } from "@reduxjs/toolkit";
 import { collection, doc, setDoc } from "firebase/firestore/lite"
 import { RootState } from "../store";
 import { FirebaseDB } from "../../firebase/config";
-import { addNewEmptyNote, savingNewNote, setActiveNote, setNotes, setSaving, updateNote } from "./journalSlice";
+import { addNewEmptyNote, savingNewNote, setActiveNote, setNotes, setPhotosToActiveNote, setSaving, updateNote } from "./journalSlice";
 import { fileUpload, loadNotes } from "../../helpers";
 
 export const startNewNote = createAsyncThunk<{}, {}, { rejectValue: string }>(
@@ -76,7 +76,16 @@ export const startUploadingFiles = createAsyncThunk<{}, { files: FileList }, { r
     async ({ files }, thunkAPI) => {
         try {
             thunkAPI.dispatch(setSaving())
-            await fileUpload(files[0]);
+            //await fileUpload(files[0]);
+            //Promise<string>
+            const fileUploadPromises = [];
+            for (const file of files) {
+                fileUploadPromises.push(fileUpload(file))
+            }
+
+            const photosUrls = await Promise.all(fileUploadPromises);
+            thunkAPI.dispatch(setPhotosToActiveNote(photosUrls))
+
         } catch (error) {
             console.log("error", error)
             return thunkAPI.rejectWithValue('error');

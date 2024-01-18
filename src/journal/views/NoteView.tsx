@@ -16,14 +16,16 @@ export const NoteView = () => {
         messageSaved,
         isSaving
     } = useAppSelector(state => state.journal);
-    const { control, watch, reset, getValues } = useForm({
+    const { control, watch, setValue, getValues, reset, formState: {
+        isDirty,
+    }, } = useForm({
         defaultValues: {
             id: note?.id,
             title: note?.title ? note.title : "",
             body: note?.body ? note.body : "",
         },
     });
-    const fileInputRef = useRef<HTMLInputElement>(null)
+    const fileInputRef = useRef<HTMLInputElement>(null);
 
     const onSaveNote = () => {
         dispatch(startSaveNote({}));
@@ -36,44 +38,48 @@ export const NoteView = () => {
         dispatch(startUploadingFiles({ files: target.files }))
     }
 
+    useEffect(() => {
+        if (note) {
+            if (getValues("id") != note.id) {
+                reset({
+                    "id": note.id,
+                    "title": note.title ? note.title : "",
+                    "body": note.body ? note.body : "",
+                });
+            }
+        }
+    }, [note, reset, getValues]);
+
     const dateString = useMemo(() => {
         if (note?.date) {
             const newDate = new Date(note.date);
             return newDate.toUTCString()
         }
         return note?.date
-    }, [note?.date]);
+    }, [note]);
+
+    console.log(isDirty);
 
     useEffect(() => {
         const subscription = watch((value) => {
             if (note && note.id) {
-                dispatch(setActiveNote({
-                    ...note,
-                    ...value
-                }))
+                if (getValues("id") == note.id) {
+                    dispatch(setActiveNote({
+                        ...note,
+                        ...value
+                    }))
+                }
             }
         }
         )
         return () => subscription.unsubscribe()
-    }, [watch]);
+    }, [watch, note, getValues]);
 
     useEffect(() => {
         if (messageSaved.length > 0) {
             Swal.fire('Note updated', messageSaved, 'success');
         }
     }, [messageSaved]);
-
-    useEffect(() => {
-        if (note) {
-            if (getValues("id") != note.id) {
-                reset({
-                    id: note.id,
-                    title: note.title,
-                    body: note.body,
-                });
-            }
-        }
-    }, [note]);
 
     return (
         <Grid
@@ -146,8 +152,7 @@ export const NoteView = () => {
             </Grid>
 
             {/* Image gallery */}
-            <ImageGallery />
-
+            {note?.imagesUrls && <ImageGallery imagesUrls={note.imagesUrls} />}
         </Grid>
     )
 }

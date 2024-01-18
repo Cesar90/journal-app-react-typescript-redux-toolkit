@@ -11,6 +11,7 @@ import {
     loginWithEmailPassword,
     logoutFirebase
 } from '../../firebase/providers';
+import { clearNotesLogout } from '../journal';
 
 type TsignInWithGoogle = Awaited<ReturnType<typeof signInWithGoogle>>
 
@@ -111,6 +112,7 @@ export const startLogout = createAsyncThunk<{}, {}, { rejectValue: string }>(
         try {
             await logoutFirebase();
             thunkAPI.dispatch(logout({}))
+            thunkAPI.dispatch(clearNotesLogout())
         } catch (error) {
             return thunkAPI.rejectWithValue('error');
         }
